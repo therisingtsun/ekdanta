@@ -9,3 +9,5 @@ export type Habit = {
 	goal: string;
 	record: Array<Streak>;
 };
+
+export type HabitsList = Array<Habit>;
