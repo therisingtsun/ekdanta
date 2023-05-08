@@ -1,15 +1,15 @@
-export type SubTask = {
-	title: string;
-	finished: boolean;
+export type TaskItem = {
+	description: string;
+	completed?: boolean;
 };
 
 export type Task = {
 	title: string;
-	created: Date;
-	desc: string;
-	subtasks: Array<SubTask>;
-	deadline: Date;
-	finished: boolean;
+	created?: Date;
+	description?: string;
+	items: TaskItem[];
+	deadline?: Date | null;
+	completed?: boolean;
 };
 
-export type TasksList = Array<Task>;
+export type TasksList = Task[];

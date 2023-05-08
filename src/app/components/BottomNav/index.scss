@@ -1,0 +1,17 @@
+.bottom-nav {
+	position: fixed;
+
+	inset: auto auto 0;
+	max-width: 60ch;
+	width: 100%;
+	padding: 1rem;
+
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	gap: 1rem;
+
+	a {
+		width: 100%;
+	}
+}
