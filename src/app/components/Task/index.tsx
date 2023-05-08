@@ -38,10 +38,12 @@ export default ({ task }: {task: TaskStructure }) => {
 
 	const [ state, setState ] = useState( task );
 	const clickHandler = () => {
-		setState({
-			...state,
-			completed: !state.completed
-		})
+		if (state.items.some(item => !item.completed)) {
+			state.items.forEach(item => item.completed = true)
+		} else {
+			state.items.forEach(item => item.completed = false)
+		}
+		setState({ ...state })
 	}
 	const updateHandler = (i: number) => {
 		return () => {
