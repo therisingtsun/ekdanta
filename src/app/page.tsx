@@ -10,7 +10,8 @@ export default () => {
 			title: "New Task",
 			description: "Task Description",
 			items: [
-				{ description: "Test" }
+				{ description: "Test 1" },
+				{ description: "Test 2" },
 			]
 		}} />
 

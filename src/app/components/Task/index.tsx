@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { FormControlLabel } from "@mui/material"
+import { FormControlLabel, Typography } from "@mui/material"
 import Checkbox from "@mui/material/Checkbox"
 import { grey } from "@mui/material/colors"
 
@@ -11,26 +11,23 @@ import {
 	TaskItem as TaskItemStructure
 } from "@/types/TasksList";
 
-export const TaskItem = ({ item }: { item: TaskItemStructure }) => {
-	const [ state, setState ] = useState( item )
-	const clickHandler = () => {
-		setState({
-			...state,
-			completed: !state.completed
-		})
+const checkboxStyle = {
+	color: grey[800],
+	'&.Mui-checked, &.MuiCheckbox-indeterminate': {
+		color: grey[800]
 	}
+}
 
+export const TaskItem = ({ item, clickHandler }: {
+	item: TaskItemStructure,
+	clickHandler: () => void
+}) => {
 	return <FormControlLabel
 		className="task-item-container"
-		label={item.description}
+		label={<Typography fontFamily={"Montserrat, sans-serif"}>{item.description}</Typography>}
 		control={<Checkbox
-			sx={{
-				color: grey[800],
-				'&.Mui-checked': {
-					color: grey[800]
-				}
-			}}
-			checked={state.completed ?? false}
+			sx={checkboxStyle}
+			checked={item.completed ?? false}
 			onClick={clickHandler}
 		/>}
 	/>
@@ -46,27 +43,32 @@ export default ({ task }: {task: TaskStructure }) => {
 			completed: !state.completed
 		})
 	}
-	
+	const updateHandler = (i: number) => {
+		return () => {
+			state.items[i].completed = !state.items[i].completed
+			setState({ ...state })
+		}
+	}
+
+	const completedCount = state.items.filter(item => item.completed).length
 
 	return <div className="task-container">
 		<FormControlLabel
-			label={task.title}
-			control={
-				<Checkbox
-					sx={{
-						color: grey[800],
-						'&.Mui-checked': {
-							color: grey[800]
-						}
-					}}
-					checked={state.completed || state.items.every(item => item.completed)}
-					onClick={clickHandler}
-				/>
-			}
+			label={<Typography fontFamily={"Montserrat, sans-serif"}>{task.title}</Typography>}
+			control={<Checkbox
+				sx={checkboxStyle}
+				checked={state.completed || state.items.every(item => item.completed)}
+				indeterminate={
+					completedCount > 0 && completedCount < state.items.length
+				}
+				onClick={clickHandler}
+			/>}
 		/>
-		{task.description}
+		<p>{task.description}</p>
 		<ul>{
-			task.items.map((item, i) => <li key={i}><TaskItem item={item} /></li>)
+			task.items.map((item, i) => <li key={i}>
+				<TaskItem item={item} clickHandler={updateHandler(i)} />
+			</li>)
 		}</ul>
 	</div>
 }
