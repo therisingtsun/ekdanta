@@ -2,4 +2,15 @@
 	position: relative;
 	margin: 1rem;
 	margin-bottom: 2rem;
+
+	.task-header {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: flex-start;
+		justify-content: space-between;
+
+		label {
+			width: calc(100% - 8rem);
+		}
+	}
 }

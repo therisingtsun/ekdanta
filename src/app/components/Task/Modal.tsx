@@ -8,12 +8,12 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { grey } from "@mui/material/colors";
 
 import {
 	Task as TaskStructure,
 	TaskItem as TaskItemStructure,
 } from "@/types/TasksList";
-import { grey } from "@mui/material/colors";
 
 const buttonStyle = {
 	fontFamily: "Montserrat",
@@ -24,35 +24,29 @@ const buttonStyle = {
 };
 
 export const TaskDialog = ({
+	init,
 	openTaskDialog,
 	setOpenTaskDialog,
-	handleTaskSubmit
+	onSubmit,
 }: {
+	init: () => TaskStructure;
 	openTaskDialog: boolean;
 	setOpenTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
-	handleTaskSubmit: (task: TaskStructure) => void;
+	onSubmit: (task: TaskStructure) => void;
 }) => {
-	const [ task, setTask ] = useState<TaskStructure>({
-		title: "",
-		description: "",
-		items: [],
-	})
+	const [ state, setState ] = useState<TaskStructure>(init())
 
 	return <>
-		<Button
-			variant="contained"
-			sx={buttonStyle}
-			onClick={() => setOpenTaskDialog(true)}
-		>
+		<Button variant="contained" sx={buttonStyle} onClick={() => {
+			setOpenTaskDialog(true)
+			setState(init())
+		}}>
 			Add Task
 		</Button>
-		<Dialog
-			open={openTaskDialog}
-			onClose={() => setOpenTaskDialog(false)}
-		>
+		<Dialog open={openTaskDialog} onClose={() => setOpenTaskDialog(false)}>
 			<form onSubmit={(event) => {
 				event.preventDefault()
-				handleTaskSubmit(task)
+				onSubmit(state)
 			}}>
 				<DialogTitle>Add Task</DialogTitle>
 				<DialogContent>
@@ -61,12 +55,10 @@ export const TaskDialog = ({
 						autoFocus
 						autoComplete="off" margin="dense"
 						fullWidth variant="standard"
-						onChange={(
-							event: React.ChangeEvent<HTMLInputElement>
-						) => {
-							setTask({
-								...task,
-								title: event.target.value
+						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+							setState({
+								...state,
+								title: event.target.value.trim()
 							})
 						}}
 					/>
@@ -74,12 +66,10 @@ export const TaskDialog = ({
 					<TextField
 						autoComplete="off" margin="dense"
 						fullWidth variant="standard"
-						onChange={(
-							event: React.ChangeEvent<HTMLInputElement>
-						) => {
-							setTask({
-								...task,
-								description: event.target.value
+						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+							setState({
+								...state,
+								description: event.target.value.trim()
 							})
 						}}
 					/>
@@ -97,36 +87,31 @@ export const TaskDialog = ({
 	</>
 };
 
-export const SubTaskDialog = ({
-	openSubTaskDialog,
-	setOpenSubTaskDialog,
-	handleSubTaskSubmit,
-	itemList,
-	setItemList,
+export const TaskItemDialog = ({
+	init,
+	openTaskItemDialog,
+	setOpenTaskItemDialog,
+	onSubmit,
 }: {
-	openSubTaskDialog: boolean;
-	setOpenSubTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
-	handleSubTaskSubmit: (event: React.SyntheticEvent) => void;
-	itemList: TaskItemStructure;
-	setItemList: React.Dispatch<React.SetStateAction<TaskItemStructure>>;
+	init: () => TaskItemStructure;
+	openTaskItemDialog: boolean;
+	setOpenTaskItemDialog: React.Dispatch<React.SetStateAction<boolean>>;
+	onSubmit: (item: TaskItemStructure) => void;
 }) => {
+	const [ state, setState ] = useState<TaskItemStructure>(init())
+
 	return <>
-		<Button
-			sx={buttonStyle}
-			variant="contained"
-			onClick={() => {
-				setOpenSubTaskDialog(true);
-			}}
-		>
+		<Button sx={buttonStyle} variant="contained" onClick={() => {
+			setOpenTaskItemDialog(true)
+			setState(init())
+		}}>
 			Add Item
 		</Button>
-		<Dialog
-			open={openSubTaskDialog}
-			onClose={() => {
-				setOpenSubTaskDialog(false);
-			}}
-		>
-			<form onSubmit={handleSubTaskSubmit}>
+		<Dialog open={openTaskItemDialog} onClose={() => setOpenTaskItemDialog(false)}>
+			<form onSubmit={(event) => {
+				event.preventDefault()
+				onSubmit(state)
+			}}>
 				<DialogTitle>Add Item</DialogTitle>
 				<DialogContent>
 					<DialogContentText>Description</DialogContentText>
@@ -136,70 +121,23 @@ export const SubTaskDialog = ({
 						margin="dense"
 						fullWidth
 						variant="standard"
-						onChange={(
-							event: React.ChangeEvent<HTMLInputElement>
-						) => {
-							const taskItem: TaskItemStructure = {
-								description: event.target.value,
-							};
-							setItemList({ ...taskItem });
+						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+							setState({
+								...state,
+								description: event.target.value.trim()
+							})
 						}}
 					/>
 				</DialogContent>
 				<DialogActions>
-					<Button
-						onClick={() => {
-							setOpenSubTaskDialog(false);
-						}}
-					>
+					<Button onClick={() => setOpenTaskItemDialog(false)}>
 						Cancel
 					</Button>
-					<Button
-						type="submit"
-						onClick={() => {
-							setOpenSubTaskDialog(false);
-						}}
-					>
+					<Button type="submit" onClick={() => setOpenTaskItemDialog(false)}>
 						Add
 					</Button>
 				</DialogActions>
 			</form>
 		</Dialog>
 	</>
-};
-
-export default ({
-	task,
-	setTask,
-}: {
-	task: TaskStructure;
-	setTask: React.Dispatch<React.SetStateAction<TaskStructure>>;
-}) => {
-	const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
-	const [itemList, setItemList] = useState({
-		description: ""
-	});
-
-	const handleSubTaskSubmit = (event: React.SyntheticEvent) => {
-		event.preventDefault();
-		let taskList = task.items;
-		taskList.push(itemList);
-		setTask({
-			...task,
-			completed: false,
-			items: [...taskList],
-		});
-	};
-
-	return (
-		<div>
-			<SubTaskDialog
-				openSubTaskDialog={openSubTaskDialog}
-				setOpenSubTaskDialog={setOpenSubTaskDialog}
-				handleSubTaskSubmit={handleSubTaskSubmit}
-				itemList={itemList}
-				setItemList={setItemList}
-			/>
-		</div>
-	);
 };

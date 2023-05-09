@@ -4,6 +4,7 @@ export type TaskItem = {
 };
 
 export type Task = {
+	id: string;
 	title: string;
 	created?: Date;
 	description?: string;

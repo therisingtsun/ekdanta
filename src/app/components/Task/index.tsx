@@ -11,7 +11,7 @@ import {
 	Task as TaskStructure,
 	TaskItem as TaskItemStructure,
 } from "@/types/TasksList";
-import FormDialog from "./Modal";
+import { TaskItemDialog } from "./Modal";
 
 const checkboxStyle = {
 	color: grey[800],
@@ -22,10 +22,10 @@ const checkboxStyle = {
 
 export const TaskItem = ({
 	item,
-	clickHandler,
+	onClick,
 }: {
 	item: TaskItemStructure;
-	clickHandler: () => void;
+	onClick: () => void;
 }) => {
 	return (
 		<FormControlLabel
@@ -39,14 +39,17 @@ export const TaskItem = ({
 				<Checkbox
 					sx={checkboxStyle}
 					checked={item.completed ?? false}
-					onClick={clickHandler}
+					onClick={onClick}
 				/>
 			}
 		/>
 	);
 };
 
-export default ({ task }: { task: TaskStructure }) => {
+export default ({ task, onUpdate }: {
+	task: TaskStructure,
+	onUpdate: (task: TaskStructure) => void
+}) => {
 	task.created ??= new Date();
 
 	const [state, setState] = useState(task);
@@ -65,43 +68,65 @@ export default ({ task }: { task: TaskStructure }) => {
 	};
 	const updateHandler = (i: number) => {
 		return () => {
-			state.items[i].completed = !state.items[i].completed;
-			setState({ ...state });
+			state.items[i].completed = !state.items[i].completed
+			onUpdate(state)
+			setState({ ...state })
 		};
 	};
+
+	const [ openNewTaskItemDialog, setOpenNewTaskItemDialog ] = useState(false);
+	const handleTaskItem = (item: TaskItemStructure) => {
+		if (item.description.length > 0) {
+			state.items = [ ...state.items, item ]
+			setState(state)
+			onUpdate(state)
+		}
+	}
 
 	const completedCount = state.items.filter((item) => item.completed).length;
 	// console.log(state)
 
 	return (
 		<div className="task-container">
-			<FormDialog task={state} setTask={setState} />
-			<FormControlLabel
-				label={
-					<Typography fontFamily={"Montserrat, sans-serif"}>
-						{state.title}
-					</Typography>
-				}
-				control={
-					<Checkbox
-						sx={checkboxStyle}
-						checked={
-							state.completed ||
-							state.items.length > 0 && state.items.every((item) => item.completed)
+			<div className="task-header">
+				<FormControlLabel
+					label={
+						<Typography fontFamily={"Montserrat, sans-serif"}>
+							{state.title}
+						</Typography>
+					}
+					control={
+						<Checkbox
+							sx={checkboxStyle}
+							checked={
+								state.completed ||
+								state.items.length > 0 && state.items.every((item) => item.completed)
+							}
+							indeterminate={
+								completedCount > 0 &&
+								completedCount < state.items.length
+							}
+							onClick={clickHandler}
+						/>
+					}
+				/>
+				<TaskItemDialog
+					init={() => {
+						return {
+							description: "",
+							completed: false
 						}
-						indeterminate={
-							completedCount > 0 &&
-							completedCount < state.items.length
-						}
-						onClick={clickHandler}
-					/>
-				}
-			/>
+					}}
+					openTaskItemDialog={openNewTaskItemDialog}
+					setOpenTaskItemDialog={setOpenNewTaskItemDialog}
+					onSubmit={handleTaskItem}
+				/>
+			</div>
 			<p>{state.description}</p>
 			<ul>
 				{state.items.map((item, i) => (
 					<li key={i}>
-						<TaskItem item={item} clickHandler={updateHandler(i)} />
+						<TaskItem item={item} onClick={updateHandler(i)} />
 					</li>
 				))}
 			</ul>
