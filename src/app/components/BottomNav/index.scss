@@ -1,15 +1,16 @@
 .bottom-nav {
 	position: fixed;
 
-	inset: auto auto 0;
+	inset: auto 0 0;
 	max-width: 60ch;
 	width: 100%;
-	padding: 1rem;
+	padding: 1rem 0.5rem;
+	margin: auto;
 
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
-	gap: 1rem;
+	gap: 0.5rem;
 
 	a {
 		width: 100%;

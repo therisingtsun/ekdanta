@@ -1,9 +1,10 @@
 "use client";
 
+import "./index.scss";
+
 import { useState } from "react";
 
-import { FormControlLabel, Typography } from "@mui/material";
-import Checkbox from "@mui/material/Checkbox";
+import { FormControlLabel, Typography, Checkbox } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
 import {
@@ -55,6 +56,11 @@ export default ({ task }: { task: TaskStructure }) => {
 		} else {
 			state.items.forEach((item) => (item.completed = false));
 		}
+		if (state.items.length > 0) {
+			state.completed = state.items[0].completed
+		} else {
+			state.completed = !state.completed
+		}
 		setState({ ...state });
 	};
 	const updateHandler = (i: number) => {
@@ -65,7 +71,7 @@ export default ({ task }: { task: TaskStructure }) => {
 	};
 
 	const completedCount = state.items.filter((item) => item.completed).length;
-	console.log("Main--", state);
+	// console.log(state)
 
 	return (
 		<div className="task-container">
@@ -81,7 +87,7 @@ export default ({ task }: { task: TaskStructure }) => {
 						sx={checkboxStyle}
 						checked={
 							state.completed ||
-							state.items.every((item) => item.completed)
+							state.items.length > 0 && state.items.every((item) => item.completed)
 						}
 						indeterminate={
 							completedCount > 0 &&

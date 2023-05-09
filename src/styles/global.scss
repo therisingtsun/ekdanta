@@ -10,7 +10,7 @@
 	--color-font: #eee;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
 	:root {
 		color-scheme: light;
 
@@ -25,12 +25,19 @@
 }
 
 body {
-	max-width: 60ch;
 	margin: auto;
-
+	
 	font-family: "Montserrat", sans-serif;
-
+	
 	background-color: var(--background);
+}
+
+main {
+	margin: auto;
+	padding: 0 calc((100vw - 60ch)/2);
+
+	height: calc(100vh - 10rem);
+	overflow-y: auto;
 }
 
 h1 {
