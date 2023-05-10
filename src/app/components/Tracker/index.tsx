@@ -3,10 +3,14 @@
 import {
 	Habit as HabitStructure,
 	HabitsList as HabitsListStructure,
+	Streak,
 } from "@/types/HabitsList";
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
+import "./index.scss";
 export default ({
 	habit,
 	onUpdate,
@@ -25,6 +29,14 @@ export default ({
 	};
 	const updateHandler = () => {
 		onUpdate(state, true);
+	};
+	const streakCalculator = () => {
+		const maxStreak = state.record.every((record) => record.performed)
+			? state.record.length
+			: 0;
+		console.log(maxStreak);
+
+		return maxStreak;
 	};
 	return (
 		<div className="habit-container">
@@ -50,6 +62,18 @@ export default ({
 						Remove
 					</Button>
 				</Stack>
+				<Box sx={{ width: 300 }}>
+					<Slider
+						aria-label="Temperature"
+						defaultValue={streakCalculator()}
+						valueLabelDisplay="auto"
+						step={7}
+						marks
+						min={0}
+						max={7}
+						value={streakCalculator()}
+					/>
+				</Box>
 			</div>
 		</div>
 	);

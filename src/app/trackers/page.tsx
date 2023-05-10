@@ -18,7 +18,7 @@ const habits: HabitStructure[] = [
 		record: [
 			{
 				date: new Date(),
-				performed: false,
+				performed: true,
 			},
 		],
 	},
