@@ -10,9 +10,15 @@ body {
 	font-family: "Montserrat", sans-serif;
 }
 
+@media (prefers-color-scheme: dark) {
+	body {
+		color-scheme: dark;
+	}
+}
+
 main {
 	margin: auto;
-	padding: 0 calc((100vw - 60ch)/2);
+	padding: 0 calc((100vw - 60ch)/2) 5rem;
 
 	height: calc(100vh - 10rem);
 	overflow-y: auto;

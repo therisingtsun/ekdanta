@@ -3,12 +3,8 @@
 import "../styles/global.scss";
 
 import { CssBaseline, ThemeProvider, createTheme, useMediaQuery } from "@mui/material";
-import { deepOrange, grey } from "@mui/material/colors";
+import { deepOrange } from "@mui/material/colors";
 import { useMemo } from "react";
-
-export const metadata = {
-	title: 'Ekdanta'
-}
 
 export default function RootLayout({
 	children,
@@ -31,6 +27,9 @@ export default function RootLayout({
 
 	return (
 		<html lang="en">
+			<head>
+				<title>Ekdanta</title>
+			</head>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
 				<body>{children}</body>

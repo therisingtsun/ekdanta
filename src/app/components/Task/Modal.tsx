@@ -1,13 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import {
+	Button,
+	TextField,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	IconButton,
+	Fab,
+} from "@mui/material";
+import { AddCircleRounded, AddRounded } from "@mui/icons-material";
 
 import {
 	Task as TaskStructure,
@@ -15,26 +20,31 @@ import {
 } from "@/types/TasksList";
 
 export const TaskDialog = ({
-	init,
-	openTaskDialog,
-	setOpenTaskDialog,
-	onSubmit,
+	init, open, setOpen, onSubmit,
 }: {
 	init: () => TaskStructure;
-	openTaskDialog: boolean;
-	setOpenTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
+	open: boolean;
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	onSubmit: (task: TaskStructure) => void;
 }) => {
 	const [ state, setState ] = useState<TaskStructure>(init())
 
 	return <>
-		<Button variant="contained" onClick={() => {
-			setOpenTaskDialog(true)
-			setState(init())
-		}}>
-			Add Task
-		</Button>
-		<Dialog open={openTaskDialog} onClose={() => setOpenTaskDialog(false)}>
+		<Fab
+			sx={{
+				position: "fixed",
+				inset: "auto auto 4rem 50%",
+				translate: "-50% 0",
+			}}
+			size="large" color="primary"
+			onClick={() => {
+				setOpen(true)
+				setState(init())
+			}}
+		>
+			<AddRounded sx={{ fontSize: "4rem" }} />
+		</Fab>
+		<Dialog open={open} onClose={() => setOpen(false)}>
 			<form onSubmit={(event) => {
 				event.preventDefault()
 				onSubmit(state)
@@ -57,7 +67,7 @@ export const TaskDialog = ({
 					<TextField
 						autoComplete="off" margin="dense"
 						fullWidth
-						multiline minRows={4}
+						multiline rows={4}
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 							setState({
 								...state,
@@ -67,10 +77,10 @@ export const TaskDialog = ({
 					/>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={() => setOpenTaskDialog(false)}>
+					<Button onClick={() => setOpen(false)}>
 						Cancel
 					</Button>
-					<Button type="submit" onClick={() => setOpenTaskDialog(false)}>
+					<Button type="submit" onClick={() => setOpen(false)}>
 						Add
 					</Button>
 				</DialogActions>
@@ -80,26 +90,23 @@ export const TaskDialog = ({
 };
 
 export const TaskItemDialog = ({
-	init,
-	openTaskItemDialog,
-	setOpenTaskItemDialog,
-	onSubmit,
+	init, open, setOpen, onSubmit,
 }: {
 	init: () => TaskItemStructure;
-	openTaskItemDialog: boolean;
-	setOpenTaskItemDialog: React.Dispatch<React.SetStateAction<boolean>>;
+	open: boolean;
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	onSubmit: (item: TaskItemStructure) => void;
 }) => {
 	const [ state, setState ] = useState<TaskItemStructure>(init())
 
 	return <>
-		<Button variant="contained" onClick={() => {
-			setOpenTaskItemDialog(true)
+		<IconButton onClick={() => {
+			setOpen(true)
 			setState(init())
-		}}>
-			Add Item
-		</Button>
-		<Dialog open={openTaskItemDialog} onClose={() => setOpenTaskItemDialog(false)}>
+		}} size="large" color="primary">
+			<AddCircleRounded fontSize="inherit" />
+		</IconButton>
+		<Dialog open={open} onClose={() => setOpen(false)}>
 			<form onSubmit={(event) => {
 				event.preventDefault()
 				onSubmit(state)
@@ -111,7 +118,7 @@ export const TaskItemDialog = ({
 						autoFocus
 						autoComplete="off" margin="dense"
 						fullWidth
-						multiline minRows={4}
+						multiline rows={4}
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 							setState({
 								...state,
@@ -121,10 +128,10 @@ export const TaskItemDialog = ({
 					/>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={() => setOpenTaskItemDialog(false)}>
+					<Button onClick={() => setOpen(false)}>
 						Cancel
 					</Button>
-					<Button type="submit" onClick={() => setOpenTaskItemDialog(false)}>
+					<Button type="submit" onClick={() => setOpen(false)}>
 						Add
 					</Button>
 				</DialogActions>

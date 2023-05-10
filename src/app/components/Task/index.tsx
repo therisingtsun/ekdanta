@@ -3,7 +3,6 @@
 import "./index.scss";
 
 import { useState } from "react";
-
 import { FormControlLabel, Checkbox } from "@mui/material";
 
 import {
@@ -11,6 +10,7 @@ import {
 	TaskItem as TaskItemStructure,
 } from "@/types/TasksList";
 import { TaskItemDialog } from "./Modal";
+import DeleteWithConfirmation from "../DeleteWithConfirmation";
 
 export const TaskItem = ({
 	item,
@@ -35,7 +35,7 @@ export const TaskItem = ({
 
 export default ({ task, onUpdate }: {
 	task: TaskStructure,
-	onUpdate: (task: TaskStructure) => void
+	onUpdate: (task: TaskStructure, remove?: boolean) => void
 }) => {
 	task.created ??= new Date();
 
@@ -60,6 +60,13 @@ export default ({ task, onUpdate }: {
 			setState({ ...state })
 		};
 	};
+	const deleteHandler = (i: number) => {
+		return () => {
+			state.items.splice(i, 1)
+			onUpdate(state)
+			setState({ ...state })
+		}
+	}
 
 	const [ openNewTaskItemDialog, setOpenNewTaskItemDialog ] = useState(false);
 	const handleTaskItem = (item: TaskItemStructure) => {
@@ -72,7 +79,7 @@ export default ({ task, onUpdate }: {
 
 	const completedCount = state.items.filter((item) => item.completed).length;
 	// console.log(state)
-
+	
 	return (
 		<div className="task-container">
 			<div className="task-header">
@@ -92,25 +99,27 @@ export default ({ task, onUpdate }: {
 						/>
 					}
 				/>
-				<TaskItemDialog
-					init={() => {
-						return {
-							description: "",
-							completed: false
-						}
-					}}
-					openTaskItemDialog={openNewTaskItemDialog}
-					setOpenTaskItemDialog={setOpenNewTaskItemDialog}
-					onSubmit={handleTaskItem}
-				/>
+				<div>
+					<TaskItemDialog
+						init={() => {
+							return {
+								description: "",
+								completed: false
+							}
+						}}
+						open={openNewTaskItemDialog}
+						setOpen={setOpenNewTaskItemDialog}
+						onSubmit={handleTaskItem}
+					/>					
+					<DeleteWithConfirmation title="Delete Task" onConfirm={() => onUpdate(state, true)}/>
+				</div>
 			</div>
 			<p>{state.description}</p>
 			<ul>
-				{state.items.map((item, i) => (
-					<li key={i}>
-						<TaskItem item={item} onClick={updateHandler(i)} />
-					</li>
-				))}
+				{state.items.map((item, i) => <li key={i}>
+					<TaskItem item={item} onClick={updateHandler(i)} />
+					<DeleteWithConfirmation title="Delete Item" onConfirm={deleteHandler(i)}/>
+				</li>)}
 			</ul>
 		</div>
 	);

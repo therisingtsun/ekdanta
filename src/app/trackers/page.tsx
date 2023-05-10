@@ -9,12 +9,13 @@ import { v4 as uuid } from "uuid";
 import { useState } from "react";
 import Tracker from "../components/Tracker";
 import { HabitDialog } from "../components/Tracker/Modal";
+
 const habits: HabitStructure[] = [
 	{
 		id: uuid(),
-		title: "New Habit",
+		title: "Evening Workout",
 		created: new Date(),
-		goal: "Perform n times",
+		goal: "Do 100 pushups",
 		record: [
 			{
 				date: new Date(),
@@ -29,22 +30,28 @@ export default () => {
 	const [openHabitDialog, setOpenHabitDialog] = useState(false);
 
 	const handleHabitSubmit = (habit: HabitStructure) => {
-		setState([...state, habit]);
+		if (habit.title.length > 0) {
+			setState([
+				...state,
+				habit
+			])
+		}
 	};
 
-	const handleHabitUpdate = (habit: HabitStructure, ifRemove: boolean) => {
+	const handleHabitUpdate = (habit: HabitStructure, remove?: boolean) => {
 		const i = state.findIndex((t) => t.id === habit.id);
 		if (i > -1) {
-			if (!ifRemove) state[i] = habit;
-			else state.splice(i, 1);
-			setState([...state]);
+			if (remove) state.splice(i, 1)
+			else state[i] = habit
+			setState([ ...state ])
 		}
 	};
 	console.log(state);
 
-	return (
-		<>
-			<h1>Trackers</h1>
+	return <>
+		<h1>Trackers</h1>
+
+		<main>
 			<HabitDialog
 				init={() => {
 					return {
@@ -55,20 +62,19 @@ export default () => {
 						record: [],
 					};
 				}}
-				openHabitDialog={openHabitDialog}
-				setOpenHabitDialog={setOpenHabitDialog}
+				open={openHabitDialog}
+				setOpen={setOpenHabitDialog}
 				onSubmit={handleHabitSubmit}
 			/>
-			<main>
-				{state.map((habit, i) => (
-					<Tracker
-						key={i}
-						habit={habit}
-						onUpdate={handleHabitUpdate}
-					/>
-				))}
-			</main>
-			<BottomNav />
-		</>
-	);
+			{state.map((habit, i) => (
+				<Tracker
+					key={i}
+					habit={habit}
+					onUpdate={handleHabitUpdate}
+				/>
+			))}
+		</main>
+
+		<BottomNav />
+	</>
 };

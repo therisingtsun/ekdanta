@@ -1,0 +1,23 @@
+.habit-container {
+	position: relative;
+	margin: 1rem;
+	margin-bottom: 2rem;
+
+	.habit-header {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: flex-start;
+		justify-content: space-between;
+
+		.habit-done {
+			font-size: 0.8rem;
+			opacity: 0.5;
+			text-transform: uppercase;
+			vertical-align: middle;
+		}
+	}
+
+	p {
+		margin-top: 0;
+	}
+}

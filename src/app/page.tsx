@@ -36,15 +36,18 @@ export default () => {
 	const [ openNewTaskDialog, setOpenNewTaskDialog ] = useState(false);
 
 	const handleTaskSubmit = (task: TaskStructure) => {
-		setState([
-			...state,
-			task
-		])
+		if (task.title.length > 0) {
+			setState([
+				...state,
+				task
+			])
+		}
 	}
-	const handleTaskUpdate = (task: TaskStructure) => {
+	const handleTaskUpdate = (task: TaskStructure, remove?: boolean) => {
 		const i = state.findIndex(t => t.id === task.id)
 		if (i > -1) {
-			state[i] = task;
+			if (remove) state.splice(i, 1)
+			else state[i] = task
 			setState([ ...state ])
 		}
 	}
@@ -67,8 +70,8 @@ export default () => {
 						completed: false,
 					}
 				}}
-				openTaskDialog={openNewTaskDialog}
-				setOpenTaskDialog={setOpenNewTaskDialog}
+				open={openNewTaskDialog}
+				setOpen={setOpenNewTaskDialog}
 				onSubmit={handleTaskSubmit}
 			/>
 			{state.map((task, i) => <Task
