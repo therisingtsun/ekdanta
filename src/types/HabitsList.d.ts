@@ -4,6 +4,7 @@ export type Streak = {
 };
 
 export type Habit = {
+	id: string;
 	title: string;
 	created: Date;
 	goal: string;
