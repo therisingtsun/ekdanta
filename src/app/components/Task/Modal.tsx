@@ -8,20 +8,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { grey } from "@mui/material/colors";
 
 import {
 	Task as TaskStructure,
 	TaskItem as TaskItemStructure,
 } from "@/types/TasksList";
-
-const buttonStyle = {
-	fontFamily: "Montserrat",
-	backgroundColor: grey[800],
-	'&:hover': {
-		backgroundColor: grey[700],
-	}
-};
 
 export const TaskDialog = ({
 	init,
@@ -37,7 +28,7 @@ export const TaskDialog = ({
 	const [ state, setState ] = useState<TaskStructure>(init())
 
 	return <>
-		<Button variant="contained" sx={buttonStyle} onClick={() => {
+		<Button variant="contained" onClick={() => {
 			setOpenTaskDialog(true)
 			setState(init())
 		}}>
@@ -65,7 +56,8 @@ export const TaskDialog = ({
 					<DialogContentText>Description</DialogContentText>
 					<TextField
 						autoComplete="off" margin="dense"
-						fullWidth variant="standard"
+						fullWidth
+						multiline minRows={4}
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 							setState({
 								...state,
@@ -101,7 +93,7 @@ export const TaskItemDialog = ({
 	const [ state, setState ] = useState<TaskItemStructure>(init())
 
 	return <>
-		<Button sx={buttonStyle} variant="contained" onClick={() => {
+		<Button variant="contained" onClick={() => {
 			setOpenTaskItemDialog(true)
 			setState(init())
 		}}>
@@ -116,11 +108,10 @@ export const TaskItemDialog = ({
 				<DialogContent>
 					<DialogContentText>Description</DialogContentText>
 					<TextField
-						autoComplete="off"
 						autoFocus
-						margin="dense"
+						autoComplete="off" margin="dense"
 						fullWidth
-						variant="standard"
+						multiline minRows={4}
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 							setState({
 								...state,

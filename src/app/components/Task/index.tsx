@@ -4,21 +4,13 @@ import "./index.scss";
 
 import { useState } from "react";
 
-import { FormControlLabel, Typography, Checkbox } from "@mui/material";
-import { grey } from "@mui/material/colors";
+import { FormControlLabel, Checkbox } from "@mui/material";
 
 import {
 	Task as TaskStructure,
 	TaskItem as TaskItemStructure,
 } from "@/types/TasksList";
 import { TaskItemDialog } from "./Modal";
-
-const checkboxStyle = {
-	color: grey[800],
-	"&.Mui-checked, &.MuiCheckbox-indeterminate": {
-		color: grey[800],
-	},
-};
 
 export const TaskItem = ({
 	item,
@@ -30,14 +22,9 @@ export const TaskItem = ({
 	return (
 		<FormControlLabel
 			className="task-item-container"
-			label={
-				<Typography fontFamily={"Montserrat, sans-serif"}>
-					{item.description}
-				</Typography>
-			}
+			label={item.description}
 			control={
 				<Checkbox
-					sx={checkboxStyle}
 					checked={item.completed ?? false}
 					onClick={onClick}
 				/>
@@ -90,14 +77,9 @@ export default ({ task, onUpdate }: {
 		<div className="task-container">
 			<div className="task-header">
 				<FormControlLabel
-					label={
-						<Typography fontFamily={"Montserrat, sans-serif"}>
-							{state.title}
-						</Typography>
-					}
+					label={state.title}
 					control={
 						<Checkbox
-							sx={checkboxStyle}
 							checked={
 								state.completed ||
 								state.items.length > 0 && state.items.every((item) => item.completed)

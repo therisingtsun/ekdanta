@@ -1,24 +1,37 @@
 'use client';
 
-import { usePathname } from "next/navigation"
-import "./index.scss"
-
-import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { BottomNavigation, BottomNavigationAction } from "@mui/material";
 
 const paths = [
-	{ href: "trackers", text: "Trackers" },
-	{ href: "", text: "Today" },
-	{ href: "journal", text: "Journal" },
+	{ href: "/trackers", text: "Trackers" },
+	{ href: "/", text: "Today" },
+	{ href: "/journal", text: "Journal" },
 ]
 
 export default () => {
+	const router = useRouter()
 	const pathname = usePathname()
 
-	return <div className="bottom-nav">{
-		paths.map(({ href, text }, i) => {
-			return <Link key={i} className={"button-link " + (
-				pathname.substring(1) === href ? "--active" : ""
-			)} href={href}>{text}</Link>
-		})
-	}</div>
+	const index = paths.findIndex(p => p.href === pathname)
+
+	return <BottomNavigation
+		sx={{
+			position: "fixed",
+			inset: "auto 0 0"
+		}}
+		showLabels
+		value={index}
+		onChange={(_, value) => {
+			router.push(paths[value].href)
+		}}
+	>{
+		paths.map(({ text }, i) => <BottomNavigationAction sx={{
+			textTransform: "uppercase",
+			fontWeight: 600,
+			"&.Mui-selected": {
+				fontWeight: 900
+			}
+		}} key={i} label={text} />)
+	}</BottomNavigation>
 }
