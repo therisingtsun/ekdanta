@@ -1,6 +1,6 @@
 export type Streak = {
 	date: Date;
-	performed: Boolean;
+	performed: boolean;
 };
 
 export type Habit = {

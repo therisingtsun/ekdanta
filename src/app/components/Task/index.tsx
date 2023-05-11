@@ -78,7 +78,6 @@ export default ({ task, onUpdate }: {
 	}
 
 	const completedCount = state.items.filter((item) => item.completed).length;
-	// console.log(state)
 	
 	return (
 		<div className="task-container">
