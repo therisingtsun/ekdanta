@@ -1,58 +1,37 @@
 "use client";
 
 import { useState } from "react"
-import BottomNav from "./components/BottomNav"
-import Task from "./components/Task"
-import { TaskDialog } from "./components/Task/Modal";
 import { v4 as uuid } from "uuid";
 
 import {
 	Task as TaskStructure,
 	TaskItem as TaskItemStructure,
 } from "@/types/TasksList";
-
-const tasks: TaskStructure[] = [
-	{
-		id: uuid(),
-		title: "New Task",
-		description: "Task Description",
-		items: [
-			{ description: "Test 1" },
-			{ description: "Test 2" },
-		]
-	},
-	{
-		id: uuid(),
-		title: "Old Task",
-		description: "Doneded",
-		items: [
-			{ description: "Testing", completed: true },
-		]
-	},
-]
+import { db } from "@/utils/database";
+import BottomNav from "./components/BottomNav"
+import Task from "./components/Task"
+import { TaskDialog } from "./components/Task/Modal";
+import { useLiveQuery } from "dexie-react-hooks";
 
 export default () => {
-	const [ state, setState ] = useState(tasks)
+	const tasks = useLiveQuery(() => db.tasks.toArray())
 	const [ openNewTaskDialog, setOpenNewTaskDialog ] = useState(false);
 
-	const handleTaskSubmit = (task: TaskStructure) => {
+	const handleTaskSubmit = async (task: TaskStructure) => {
 		if (task.title.length > 0) {
-			setState([
-				...state,
-				task
-			])
+			await db.tasks.add(task)
 		}
 	}
-	const handleTaskUpdate = (task: TaskStructure, remove?: boolean) => {
-		const i = state.findIndex(t => t.id === task.id)
+	const handleTaskUpdate = async (task: TaskStructure, remove?: boolean) => {
+		const i = tasks?.findIndex(t => t.id === task.id) ?? -1
 		if (i > -1) {
-			if (remove) state.splice(i, 1)
-			else state[i] = task
-			setState([ ...state ])
+			if (remove) {
+				await db.tasks.delete(task.id)
+			} else {
+				await db.tasks.update(task.id, task)
+			}
 		}
 	}
-
-	// console.log(state)
 
 	return <>
 		<h1>Today</h1>
@@ -74,7 +53,7 @@ export default () => {
 				setOpen={setOpenNewTaskDialog}
 				onSubmit={handleTaskSubmit}
 			/>
-			{state.map((task, i) => <Task
+			{tasks?.map((task, i) => <Task
 				key={i}
 				task={task}
 				onUpdate={handleTaskUpdate}

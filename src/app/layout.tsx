@@ -1,6 +1,6 @@
 "use client";
 
-import "../styles/global.scss";
+import "@/styles/global.scss";
 
 import { CssBaseline, ThemeProvider, createTheme, useMediaQuery } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";

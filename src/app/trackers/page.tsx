@@ -1,52 +1,55 @@
 "use client";
 
+import { useState } from "react";
+import { v4 as uuid } from "uuid";
+
 import {
 	Habit as HabitStructure,
 	HabitsList as HabitsListStructure,
 } from "@/types/HabitsList";
+import { db } from "@/utils/database";
 import BottomNav from "../components/BottomNav";
-import { v4 as uuid } from "uuid";
-import { useState } from "react";
 import Tracker from "../components/Tracker";
 import { HabitDialog } from "../components/Tracker/Modal";
+import { useLiveQuery } from "dexie-react-hooks";
 
-const habits: HabitStructure[] = [
-	{
-		id: uuid(),
-		title: "Evening Workout",
-		created: new Date(),
-		goal: "Do 100 pushups",
-		record: [
-			{
-				date: new Date(),
-				performed: false,
-			},
-		],
-	},
-];
+// const habits: HabitStructure[] = [
+// 	{
+// 		id: uuid(),
+// 		title: "Evening Workout",
+// 		created: new Date(),
+// 		goal: "Do 100 pushups",
+// 		record: [
+// 			{
+// 				date: new Date(),
+// 				performed: false,
+// 			},
+// 		],
+// 	},
+// ];
 
 export default () => {
+	const habits = useLiveQuery(() => db.habits.toArray())
+
 	const [state, setState] = useState(habits);
 	const [openHabitDialog, setOpenHabitDialog] = useState(false);
 
-	const handleHabitSubmit = (habit: HabitStructure) => {
+	const handleHabitSubmit = async (habit: HabitStructure) => {
 		if (habit.title.length > 0) {
-			setState([
-				...state,
-				habit
-			])
+			await db.habits.add(habit)
 		}
 	};
 
-	const handleHabitUpdate = (habit: HabitStructure, remove?: boolean) => {
-		const i = state.findIndex((t) => t.id === habit.id);
+	const handleHabitUpdate = async (habit: HabitStructure, remove?: boolean) => {
+		const i = habits?.findIndex((t) => t.id === habit.id) ?? -1
 		if (i > -1) {
-			if (remove) state.splice(i, 1)
-			else state[i] = habit
-			setState([ ...state ])
+			if (remove) {
+				await db.habits.delete(habit.id)
+			} else {
+				await db.habits.update(habit.id, habit)
+			}
 		}
 	};
-	console.log(state);
 
 	return <>
 		<h1>Trackers</h1>
@@ -66,7 +69,7 @@ export default () => {
 				setOpen={setOpenHabitDialog}
 				onSubmit={handleHabitSubmit}
 			/>
-			{state.map((habit, i) => (
+			{habits?.map((habit, i) => (
 				<Tracker
 					key={i}
 					habit={habit}
