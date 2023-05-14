@@ -31,22 +31,21 @@ import { useLiveQuery } from "dexie-react-hooks";
 export default () => {
 	const habits = useLiveQuery(() => db.habits.toArray())
 
-	const [state, setState] = useState(habits);
 	const [openHabitDialog, setOpenHabitDialog] = useState(false);
 
-	const handleHabitSubmit = async (habit: HabitStructure) => {
+	const handleHabitSubmit = (habit: HabitStructure) => {
 		if (habit.title.length > 0) {
-			await db.habits.add(habit)
+			db.habits.add(habit)
 		}
 	};
 
-	const handleHabitUpdate = async (habit: HabitStructure, remove?: boolean) => {
+	const handleHabitUpdate = (habit: HabitStructure, remove?: boolean) => {
 		const i = habits?.findIndex((t) => t.id === habit.id) ?? -1
 		if (i > -1) {
 			if (remove) {
-				await db.habits.delete(habit.id)
+				db.habits.delete(habit.id)
 			} else {
-				await db.habits.update(habit.id, habit)
+				db.habits.update(habit.id, habit)
 			}
 		}
 	};
@@ -69,9 +68,9 @@ export default () => {
 				setOpen={setOpenHabitDialog}
 				onSubmit={handleHabitSubmit}
 			/>
-			{habits?.map((habit, i) => (
+			{habits?.map((habit) => (
 				<Tracker
-					key={i}
+					key={habit.id}
 					habit={habit}
 					onUpdate={handleHabitUpdate}
 				/>

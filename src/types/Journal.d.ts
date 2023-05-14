@@ -1,6 +1,7 @@
 export type Journal = {
+	id: string;
 	created: Date;
-	desc: string;
+	description: string;
 };
 
 export type JournalRecord = Array<Journal>;

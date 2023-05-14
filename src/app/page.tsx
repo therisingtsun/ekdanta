@@ -17,18 +17,18 @@ export default () => {
 	const tasks = useLiveQuery(() => db.tasks.toArray())
 	const [ openNewTaskDialog, setOpenNewTaskDialog ] = useState(false);
 
-	const handleTaskSubmit = async (task: TaskStructure) => {
+	const handleTaskSubmit = (task: TaskStructure) => {
 		if (task.title.length > 0) {
-			await db.tasks.add(task)
+			db.tasks.add(task)
 		}
 	}
-	const handleTaskUpdate = async (task: TaskStructure, remove?: boolean) => {
+	const handleTaskUpdate = (task: TaskStructure, remove?: boolean) => {
 		const i = tasks?.findIndex(t => t.id === task.id) ?? -1
 		if (i > -1) {
 			if (remove) {
-				await db.tasks.delete(task.id)
+				db.tasks.delete(task.id)
 			} else {
-				await db.tasks.update(task.id, task)
+				db.tasks.update(task.id, task)
 			}
 		}
 	}
@@ -53,8 +53,8 @@ export default () => {
 				setOpen={setOpenNewTaskDialog}
 				onSubmit={handleTaskSubmit}
 			/>
-			{tasks?.map((task, i) => <Task
-				key={i}
+			{tasks?.map((task) => <Task
+				key={task.id}
 				task={task}
 				onUpdate={handleTaskUpdate}
 			/>)}

@@ -5,6 +5,15 @@ import "@/styles/global.scss";
 import { CssBaseline, ThemeProvider, createTheme, useMediaQuery } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import { useMemo } from "react";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import dayjs from "dayjs";
+import updateLocale from "dayjs/plugin/updateLocale"
+
+dayjs.extend(updateLocale)
+dayjs.updateLocale("en", {
+	weekStart: 1
+})
 
 export default function RootLayout({
 	children,
@@ -32,7 +41,9 @@ export default function RootLayout({
 			</head>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<body>{children}</body>
+				<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en">
+					<body>{children}</body>
+				</LocalizationProvider>
 			</ThemeProvider>
 		</html>
 	)
